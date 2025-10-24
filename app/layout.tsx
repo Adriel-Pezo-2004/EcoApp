@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { SessionProviderWrapper } from "@/components/session-provider"
 import "./globals.css"
+import RecyclingChatbot from "@/components/chatbot"
 
 export const metadata: Metadata = {
   title: "EcoQuiz - Aprende Reciclaje",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <Suspense fallback={null}>{children}</Suspense>
         </SessionProviderWrapper>
         <Analytics />
+        <RecyclingChatbot />
       </body>
     </html>
   )

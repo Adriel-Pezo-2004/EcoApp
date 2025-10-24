@@ -18,6 +18,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "STUDENT", // Nuevo campo
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -32,23 +33,28 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setSuccess("")
-
+  
     if (formData.password !== formData.confirmPassword) {
       setError("Las contraseñas no coinciden")
       return
     }
-
+  
     if (!acceptTerms) {
       setError("Debes aceptar los términos y condiciones")
       return
     }
-
+  
     setIsLoading(true)
-
+  
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -59,11 +65,12 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          role: formData.role, // <-- AGREGA ESTE CAMPO
         }),
       })
-
+  
       const data = await response.json()
-
+  
       if (!response.ok) {
         setError(data.error || "Error al crear la cuenta")
       } else {
@@ -145,7 +152,33 @@ export default function RegisterPage() {
                     {success}
                   </motion.div>
                 )}
-
+                <motion.div
+                  className="space-y-2"
+                  variants={inputVariants}
+                  initial="hidden"
+                  animate="visible"
+                  transition={{ duration: 0.5, delay: 0.35 }}
+                >
+                  <Label className="block mb-2 text-lg font-semibold text-center">Selecciona tu rol</Label>
+                  <div className="flex flex-col gap-3">
+                    <Button
+                      type="button"
+                      variant={formData.role === "STUDENT" ? "default" : "outline"}
+                      className="w-full py-4 text-lg"
+                      onClick={() => setFormData((prev) => ({ ...prev, role: "STUDENT" }))}
+                    >
+                      Estudiante
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={formData.role === "TEACHER" ? "default" : "outline"}
+                      className="w-full py-4 text-lg"
+                      onClick={() => setFormData((prev) => ({ ...prev, role: "TEACHER" }))}
+                    >
+                      Docente
+                    </Button>
+                  </div>
+                </motion.div>
                 <motion.div
                   className="space-y-2"
                   variants={inputVariants}
