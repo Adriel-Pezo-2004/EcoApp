@@ -43,55 +43,6 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import RecyclingChatbot from "@/components/chatbot" // Importando el Chatbot
 
-// 2. DATOS SIMULADOS DE QUIZZES
-const mockQuizzes: Quiz[] = [
-  {
-    id: "clx123abc",
-    title: "Conceptos Básicos de Reciclaje",
-    description: "Aprende qué va en cada contenedor de color.",
-    category: "General",
-    difficulty: "easy",
-    imageUrl: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fes%2Fvector%2Frecycling-icon-cartoon-style-117614716.html&psig=AOvVaw2glehSYzm3TfGbhGv_CiDI&ust=1761408045109000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjH5rqavZADFQAAAAAdAAAAABAE", // Asegúrate de tener o cambiar esta imagen
-    isActive: true, // Este quiz se mostrará
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "clx123def",
-    title: "Identificación de Plásticos",
-    description: "Domina los 7 tipos de plásticos y su reciclabilidad.",
-    category: "Plásticos",
-    difficulty: "medium",
-    imageUrl: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fes%2Fvector%2Frecycling-icon-cartoon-style-117614716.html&psig=AOvVaw2glehSYzm3TfGbhGv_CiDI&ust=1761408045109000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjH5rqavZADFQAAAAAdAAAAABAE",
-    isActive: true, // Este quiz se mostrará
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "clx123ghi",
-    title: "El Arte del Compostaje",
-    description: "Conviértete en un maestro compostador en casa.",
-    category: "Orgánicos",
-    difficulty: "hard",
-    imageUrl: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fes%2Fvector%2Frecycling-icon-cartoon-style-117614716.html&psig=AOvVaw2glehSYzm3TfGbhGv_CiDI&ust=1761408045109000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjH5rqavZADFQAAAAAdAAAAABAE",
-    isActive: true, // Este quiz se mostrará
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-   {
-    id: "clx123jkl",
-    title: "Quiz Oculto (En Mantenimiento)",
-    description: "Este quiz no debería aparecer en la lista.",
-    category: "General",
-    difficulty: "easy",
-    imageUrl: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fes%2Fvector%2Frecycling-icon-cartoon-style-117614716.html&psig=AOvVaw2glehSYzm3TfGbhGv_CiDI&ust=1761408045109000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCJjH5rqavZADFQAAAAAdAAAAABAE",
-    isActive: false, // Este quiz NO se mostrará
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
-// --- FIN DE DATOS SIMULADOS ---
-
 // Tipo para los datos completos del usuario según el esquema Prisma
 export type FullUserData = PrismaUser & {
   quizAttempts: (QuizAttempt & { quiz: Quiz })[]
@@ -135,18 +86,6 @@ const mockStudentUser: FullUserData = {
       unlockedAt: new Date(),
     },
   ],
-  quizAttempts: [
-    {
-      id: "attempt1",
-      userId: "mock-student-id",
-      quizId: "clx123abc", // Coincide con el primer mockQuiz
-      score: 80,
-      totalPoints: 100,
-      answers: {}, // Simulado
-      completedAt: new Date(),
-      quiz: mockQuizzes[0], // Objeto Quiz anidado
-    },
-  ],
   students: [], // Un estudiante no tiene estudiantes
 }
 
@@ -168,14 +107,23 @@ const mockTeacherUser: FullUserData = {
   // Relaciones
   achievements: [], // Un profesor no necesita logros de estudiante
   quizAttempts: [], // Ni intentos de quiz
-  students: [ // Un profesor SÍ tiene estudiantes
-    { ...mockStudentUser, id: "student-1", name: "Ash Ketchum", points: 800, email: "ash@test.com", password: "123", avatar: null, level: 3, badges: [], role: "STUDENT", teacherId: "mock-teacher-id", createdAt: new Date(), updatedAt: new Date(), achievements: [], quizAttempts: [], students: [] },
-    { ...mockStudentUser, id: "student-2", name: "Misty Waterflower", points: 1200, email: "misty@test.com", password: "123", avatar: null, level: 5, badges: [], role: "STUDENT", teacherId: "mock-teacher-id", createdAt: new Date(), updatedAt: new Date(), achievements: [], quizAttempts: [], students: [] },
-    { ...mockStudentUser, id: "student-3", name: "Brock Slate", points: 500, email: "brock@test.com", password: "123", avatar: null, level: 2, badges: [], role: "STUDENT", teacherId: "mock-teacher-id", createdAt: new Date(), updatedAt: new Date(), achievements: [], quizAttempts: [], students: [] },
-  ],
 }
 // --- FIN DE USUARIO SIMULADO ---
 
+const iframeContainerStyles: React.CSSProperties = {
+  position: "relative",
+  overflow: "hidden",
+  width: "100%",
+  paddingTop: "62%", // altura responsiva
+}
+const iframeStyles: React.CSSProperties = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  border: "none",
+}
 
 // -------------------------------------------------------------------
 // COMPONENTE HIJO: DashboardContent (Recibe props)
@@ -411,9 +359,7 @@ function DashboardContent({
                   <div className="flex items-center gap-2">
                     <BookOpen className="h-5 w-5 text-primary" />
                     <div>
-                      <p className="text-2xl font-bold">
-                        {user.quizAttempts.length}
-                      </p>
+
                       <p className="text-xs text-muted-foreground">
                         Completados
                       </p>
@@ -492,119 +438,136 @@ function DashboardContent({
         </motion.section>
         
         {/* ========================================================== */}
-        {/* SECCIÓN DE QUIZZES (ACTUALIZADA CON TU LÓGICA)             */}
-        {/* ========================================================== */}
-        <motion.section
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div
-            className="flex items-center justify-between mb-6"
-            variants={itemVariants}
-          >
-            <h3 className="text-2xl font-bold text-balance">
-              Quizzes Disponibles
-            </h3>
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/quizzes">Ver Todos</Link>
-            </Button>
-          </motion.div>
+    {/* SECCIÓN DE QUIZZES: tarjetas compactas (solo 2)           */}
+    {/* ========================================================== */}
+    <motion.section
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div className="flex items-center justify-between mb-6" variants={itemVariants}>
+        <h3 className="text-2xl font-bold text-balance">Quizzes Disponibles</h3>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/quizzes">Ver todos</Link>
+          </Button>
+        </div>
+      </motion.div>
 
-          {/* Only show quizzes that can be taken (isActive !== false) */}
-          {(() => {
-            const availableQuizzes = quizzes.filter((q) => q.isActive !== false)
-            if (availableQuizzes.length === 0) {
-              return (
-                <Card>
-                  <CardContent className="p-4">
-                    <p className="text-muted-foreground">No hay quizzes disponibles ahora mismo.</p>
-                  </CardContent>
-                </Card>
-              )
-            }
+      <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6" variants={containerVariants}>
+        {(quizzes && quizzes.length > 0 ? quizzes.slice(0, 2) : []).map((quiz, idx) => {
+          const attempt = user.quizAttempts?.find(a => a.quizId === quiz.id)
+          const completed = !!attempt
+          const scorePct = attempt && attempt.totalPoints ? Math.round((attempt.score / attempt.totalPoints) * 100) : null
+          const difficultyBadge =
+            quiz.difficulty === "easy" ? "Fácil" :
+            quiz.difficulty === "medium" ? "Medio" :
+            quiz.difficulty === "hard" ? "Difícil" : "Nivel"
 
-            return (
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                variants={containerVariants}
-              >
-                {availableQuizzes.map((quiz, index) => {
-                  const attempt = user.quizAttempts.find((a) => a.quizId === quiz.id)
-                  const isCompleted = !!attempt
-                  const score =
-                    attempt && attempt.totalPoints > 0
-                      ? Math.round((attempt.score / attempt.totalPoints) * 100)
-                      : 0
+          return (
+            <Card key={quiz.id} className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative overflow-hidden">
+                <img src={(quiz as any).imageUrl || "/placeholder.svg"} alt={quiz.title} className="w-full h-full object-cover" />
+                <div className="absolute top-2 left-2">
+                  <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${quiz.difficulty === "easy" ? "bg-green-100 text-green-800" : quiz.difficulty === "medium" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>
+                    {difficultyBadge}
+                  </div>
+                </div>
+                {completed && scorePct !== null && (
+                  <div className="absolute top-2 right-2">
+                    <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-500 text-white">
+                      <Trophy className="h-3 w-3 mr-1" />
+                      {scorePct}%
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                  return (
-                    <motion.div
-                      key={quiz.id}
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                        <div className="aspect-video relative overflow-hidden">
-                          <img
-                            src={quiz.imageUrl || "/placeholder.svg"}
-                            alt={quiz.title}
-                            className="w-full h-full object-cover"
-                          />
-                          {isCompleted && (
-                            <motion.div
-                              className="absolute top-2 right-2"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ delay: 0.5 + index * 0.1 }}
-                            >
-                              <Badge className="bg-green-500 text-white">
-                                <Trophy className="h-3 w-3 mr-1" />
-                                {score}%
-                              </Badge>
-                            </motion.div>
-                          )}
-                        </div>
-                        <CardHeader className="pb-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <CardTitle className="text-lg text-balance leading-tight">
-                              {quiz.title}
-                            </CardTitle>
-                            <Badge
-                              className={getDifficultyColor(quiz.difficulty)}
-                              variant="secondary"
-                            >
-                              {quiz.difficulty}
-                            </Badge>
-                          </div>
-                          <CardDescription className="text-pretty">
-                            {quiz.description}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Clock className="h-4 w-4" />
-                              <span>5-10 min</span>
-                            </div>
-                            <Button size="sm" asChild>
-                              <Link href={`/quiz/${quiz.id}`}>
-                                <Play className="h-4 w-4 mr-1" />
-                                {isCompleted ? "Repetir" : "Comenzar"}
-                              </Link>
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  )
-                })}
-              </motion.div>
-            )
-          })()}
-        </motion.section>
+              <div className="px-6 pb-4">
+                <div className="font-semibold text-lg text-balance leading-tight">{quiz.title}</div>
+                <div className="text-muted-foreground text-sm mt-1">{quiz.description}</div>
 
+                <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    <span>{(quiz as any).duration ?? "5-10 min"}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Trophy className="h-4 w-4" />
+                    <span>{(quiz as any).points ?? "30 pts"}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mt-4">
+                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">{(quiz as any).category ?? "General"}</div>
+
+                  <Link href={`/quiz/${quiz.id}`} className={`inline-flex items-center h-8 px-3 rounded-md text-sm font-medium ${completed ? "bg-green-600 text-white" : "bg-primary text-primary-foreground"}`}>
+                    <Play className="h-4 w-4 mr-1" />
+                    {completed ? "Repetir" : "Comenzar"}
+                  </Link>
+                </div>
+              </div>
+            </Card>
+          )
+        })}
+
+        {/* Si no hay quizzes, mostrar dos tarjetas estáticas (igual estilo) */}
+        {(!quizzes || quizzes.length === 0) && (
+          <>
+            <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative overflow-hidden">
+                <img src="/recycling-basics.jpg" alt="Fundamentos del Reciclaje" className="w-full h-full object-cover" />
+                <div className="absolute top-2 right-2">
+                  <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-500 text-white">
+                    85%
+                  </div>
+                </div>
+                <div className="absolute top-2 left-2">
+                  <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-100 text-green-800">Fácil</div>
+                </div>
+              </div>
+              <div className="px-6 pb-4">
+                <div className="font-semibold text-lg text-balance leading-tight">Fundamentos del Reciclaje</div>
+                <div className="text-muted-foreground text-sm mt-1">Aprende los conceptos básicos del reciclaje y su importancia para el medio ambiente</div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4">
+                  <div className="flex items-center gap-1"><Clock className="h-4 w-4" /><span>5-8 min</span></div>
+                  <div className="flex items-center gap-1"><Trophy className="h-4 w-4" /><span>30 pts</span></div>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Reciclaje Básico</div>
+                  <Link href="/quiz/1" className="inline-flex items-center h-8 px-3 rounded-md text-sm font-medium bg-primary text-primary-foreground">
+                    <Play className="h-4 w-4 mr-1" />Repetir
+                  </Link>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="aspect-video relative overflow-hidden">
+                <img src="/plastic-recycling-types.jpg" alt="Clasificación de Plásticos" className="w-full h-full object-cover" />
+                <div className="absolute top-2 left-2">
+                  <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800">Medio</div>
+                </div>
+              </div>
+              <div className="px-6 pb-4">
+                <div className="font-semibold text-lg text-balance leading-tight">Clasificación de Plásticos</div>
+                <div className="text-muted-foreground text-sm mt-1">Identifica los diferentes tipos de plásticos y cómo reciclarlos correctamente</div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4">
+                  <div className="flex items-center gap-1"><Clock className="h-4 w-4" /><span>8-12 min</span></div>
+                  <div className="flex items-center gap-1"><Trophy className="h-4 w-4" /><span>50 pts</span></div>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Plásticos</div>
+                  <Link href="/quiz/2" className="inline-flex items-center h-8 px-3 rounded-md text-sm font-medium bg-primary text-primary-foreground">
+                    <Play className="h-4 w-4 mr-1" />Comenzar
+                  </Link>
+                </div>
+              </div>
+            </Card>
+          </>
+        )}
+      </motion.div>
+    </motion.section>
         {/* ========================================================== */}
         {/* NUEVA SECCIÓN DE JUEGOS (AÑADIDA SEGÚN TU SOLICITUD)      */}
         {/* ========================================================== */}
@@ -699,29 +662,7 @@ function DashboardContent({
           </motion.div>
         </motion.section>
 
-        {/* Community Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <Card className="bg-primary text-primary-foreground">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Únete a la Comunidad
-              </CardTitle>
-              <CardDescription className="text-primary-foreground/80">
-                Conecta con otros eco-warriors y comparte tus logros
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="secondary" asChild>
-                <Link href="/community">Explorar Comunidad</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.section>
+        
       </main>
     </div>
   )
@@ -739,39 +680,46 @@ export default function DashboardPage() {
   // -----------------------------------------------------------------
   // USEEFFECT USANDO EL USUARIO SIMULADO
   // -----------------------------------------------------------------
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true)
-        
-        // --- SIMULACIÓN ---
-        await new Promise(resolve => setTimeout(resolve, 500)); 
-        
-        // Elige qué usuario probar:
-        const usuario = mockStudentUser; 
-        // const usuario = mockTeacherUser; // <-- Descomenta esta para probar el rol de profesor
-
-        setUser(usuario); // Usamos el usuario simulado
-        
-        // --- FIN SIMULACIÓN ---
-        
-        /*
-        // --- CÓDIGO REAL (descomenta esto cuando `getCurrentUser` funcione) ---
-        // const usuario = await getCurrentUser()
-        // setUser(usuario)
-        // --- FIN CÓDIGO REAL ---
-        */
-
-        setQuizzes(mockQuizzes)
-      } catch (error) {
-        console.error("Failed to fetch dashboard data:", error)
-        setUser(null)
-      } finally {
-        setLoading(false)
+    // ...existing code...
+    useEffect(() => {
+      async function fetchData() {
+        try {
+          setLoading(true)
+          
+          // --- SIMULACIÓN de usuario para desarrollo ---
+          await new Promise(resolve => setTimeout(resolve, 500)); 
+          const usuario = mockStudentUser; 
+          // const usuario = mockTeacherUser; // <-- Descomenta para probar rol profesor
+          setUser(usuario); // Usamos el usuario simulado
+          // --- FIN SIMULACIÓN ---
+          
+          // Intentar obtener quizzes reales desde el endpoint
+          try {
+            const res = await fetch("/api/quizzes")
+            if (res.ok) {
+              const data = await res.json()
+              setQuizzes(Array.isArray(data) ? data : [])
+            } else {
+              // si el endpoint responde mal, no mostrar quizzes simulados
+              setQuizzes([])
+            }
+          } catch (err) {
+            // fallo de red / CORS / etc. => no mostrar simulados en UI
+            console.error("Failed to fetch /api/quizzes:", err)
+            setQuizzes([])
+          }
+  
+        } catch (error) {
+          console.error("Failed to fetch dashboard data:", error)
+          setUser(null)
+          setQuizzes([])
+        } finally {
+          setLoading(false)
+        }
       }
-    }
-    fetchData()
-  }, [])
+      fetchData()
+    }, [])
+  // ...existing code...
   
   return (
     <AuthGuard>

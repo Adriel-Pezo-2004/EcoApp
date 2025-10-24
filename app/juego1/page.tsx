@@ -13,12 +13,12 @@ import { ArrowLeft, Gamepad2 } from "lucide-react"
 import Link from "next/link"
 
 // Estilos para el iframe responsivo
-// Esto crea un contenedor que mantiene la proporción 4:3
+// Ajustado a la proporción 1000x600 (600 / 1000 = 0.6 = 60%)
 const iframeContainerStyles: React.CSSProperties = {
   position: "relative",
   overflow: "hidden",
   width: "100%",
-  paddingTop: "75%", // Proporción 4:3 (75% de 100%)
+  paddingTop: "60.0%", // Proporción 5:3 
 }
 
 // Esto hace que el iframe llene el contenedor
@@ -51,7 +51,7 @@ export default function JuegoPage() {
             <div className="flex items-center gap-2">
               <Gamepad2 className="h-6 w-6 text-primary" />
               <CardTitle className="text-2xl font-bold">
-                Juego: Recycling Time
+                Juego: Recycling Time 2
               </CardTitle>
             </div>
             <CardDescription>
@@ -62,24 +62,14 @@ export default function JuegoPage() {
             {/* Contenedor responsivo del iframe */}
             <div style={iframeContainerStyles}>
               <iframe
-                src="https://www.cokitos.com/recycling-time-2/play"
+                // URL ACTUALIZADA
+                src="https://www.cokoplay.com/games/recycling-time-2/"
                 style={iframeStyles}
                 allowFullScreen
-                title="Juego Recycling Time 2 de Cokitos"
+                scrolling="no" // Añadido de tu snippet
               />
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Juego proporcionado por{" "}
-              <a
-                href="https://www.cokitos.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                Cokitos.com
-              </a>
-              .
-            </p>
+            
           </CardContent>
         </Card>
       </main>
