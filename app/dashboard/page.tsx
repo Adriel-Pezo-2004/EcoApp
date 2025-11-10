@@ -35,7 +35,7 @@ import {
   LogOut,
   Gamepad2, // Icono para la nueva sección de juegos
   Droplet,
-} from "lucide-react"
+} from "lucide-react";
 import Link from "next/link"
 import { AuthGuard } from "@/components/auth-guard"
 import { getCurrentUser, logout } from "@/lib/auth"
@@ -59,7 +59,7 @@ const mockStudentUser: FullUserData = {
   name: "Estudiante de Prueba",
   password: "hashedpassword",
   avatar: "https://i.pravatar.cc/150?img=5",
-  level: 2,
+  level: 2, 
   points: 650,
   badges: ["Bienvenida"], // Campo de tu esquema Prisma
   role: "STUDENT",
@@ -76,7 +76,7 @@ const mockStudentUser: FullUserData = {
       description: "Completaste tu primer quiz.",
       icon: "star",
       unlockedAt: new Date(),
-    },
+    }, 
     {
       id: "ach2",
       userId: "mock-student-id",
@@ -84,7 +84,7 @@ const mockStudentUser: FullUserData = {
       description: "Llegaste a nivel 2.",
       icon: "leaf",
       unlockedAt: new Date(),
-    },
+    }, 
   ],
   students: [], // Un estudiante no tiene estudiantes
 }
@@ -101,7 +101,7 @@ const mockTeacherUser: FullUserData = {
   badges: ["Guía Experto"],
   role: "TEACHER",
   teacherId: null,
-  createdAt: new Date(),
+  createdAt: new Date(), 
   updatedAt: new Date(),
   
   // Relaciones
@@ -114,7 +114,7 @@ const iframeContainerStyles: React.CSSProperties = {
   position: "relative",
   overflow: "hidden",
   width: "100%",
-  paddingTop: "62%", // altura responsiva
+  paddingTop: "62%", // altura responsiva 
 }
 const iframeStyles: React.CSSProperties = {
   position: "absolute",
@@ -122,7 +122,7 @@ const iframeStyles: React.CSSProperties = {
   left: 0,
   width: "100%",
   height: "100%",
-  border: "none",
+  border: "none", 
 }
 
 // -------------------------------------------------------------------
@@ -155,7 +155,7 @@ function DashboardContent({
             Cerrar Sesión
           </Button>
         </div>
-        <h2 className="font-bold text-xl mb-4">Ranking de Estudiantes</h2>
+        <h2 className="font-bold text-xl mb-4">Ranking de Estudiantes</h2> 
         <Card>
           <CardContent className="p-4">
             <ul className="space-y-2">
@@ -171,7 +171,7 @@ function DashboardContent({
                         <span className="font-bold w-6 text-center">{index + 1}.</span>
                         <span>{student.name}</span>
                       </div>
-                      <Badge variant="secondary">{student.points} pts</Badge>
+                      <Badge variant="secondary">{student.points} pts</Badge> 
                     </li>
                   ))
               ) : (
@@ -179,7 +179,7 @@ function DashboardContent({
                   Aún no tienes estudiantes.
                 </p>
               )}
-            </ul>
+            </ul> 
           </CardContent>
         </Card>
         <h2 className="font-bold text-xl mt-8 mb-4">
@@ -189,7 +189,7 @@ function DashboardContent({
           <CardContent className="p-4">
             <p className="text-muted-foreground">
               Aquí podrás ver un resumen detallado del progreso de tus
-              estudiantes.
+              estudiantes. 
             </p>
           </CardContent>
         </Card>
@@ -214,7 +214,7 @@ function DashboardContent({
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
-    }
+    };
   }
 
   const containerVariants = {
@@ -223,7 +223,7 @@ function DashboardContent({
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-      },
+      }, 
     },
   }
 
@@ -243,7 +243,7 @@ function DashboardContent({
       scale: 1.02,
       transition: {
         duration: 0.2,
-      },
+      }, 
     },
   }
 
@@ -275,7 +275,7 @@ function DashboardContent({
                 <h1 className="text-xl font-bold text-foreground">EcoQuiz</h1>
                 <p className="text-sm text-muted-foreground">Dashboard</p>
               </div>
-            </motion.div>
+            </motion.div> 
 
             <motion.div
               className="flex items-center gap-3"
@@ -307,7 +307,7 @@ function DashboardContent({
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-        >
+        > 
           <motion.div
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
             variants={itemVariants}
@@ -319,7 +319,7 @@ function DashboardContent({
               <p className="text-muted-foreground text-pretty">
                 Continúa tu viaje de aprendizaje sobre reciclaje
               </p>
-            </div>
+            </div> 
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="flex items-center gap-1">
                 <Star className="h-3 w-3" />
@@ -338,7 +338,7 @@ function DashboardContent({
               whileHover={cardHoverVariants.hover}
             >
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-4"> 
                   <div className="flex items-center gap-2">
                     <Trophy className="h-5 w-5 text-primary" />
                     <div>
@@ -346,7 +346,7 @@ function DashboardContent({
                       <p className="text-xs text-muted-foreground">Puntos</p>
                     </div>
                   </div>
-                </CardContent>
+                </CardContent> 
               </Card>
             </motion.div>
 
@@ -356,7 +356,7 @@ function DashboardContent({
             >
               <Card>
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2"> 
                     <BookOpen className="h-5 w-5 text-primary" />
                     <div>
 
@@ -364,7 +364,7 @@ function DashboardContent({
                         Completados
                       </p>
                     </div>
-                  </div>
+                  </div> 
                 </CardContent>
               </Card>
             </motion.div>
@@ -375,14 +375,14 @@ function DashboardContent({
             >
               <Card>
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2"> 
                     <Target className="h-5 w-5 text-primary" />
                     <div>
                       <p className="text-2xl font-bold">{user.level}</p>
                       <p className="text-xs text-muted-foreground">Nivel</p>
                     </div>
                   </div>
-                </CardContent>
+                </CardContent> 
               </Card>
             </motion.div>
 
@@ -392,7 +392,7 @@ function DashboardContent({
             >
               <Card>
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2"> 
                     <Award className="h-5 w-5 text-primary" />
                     <div>
                       <p className="text-2xl font-bold">
@@ -401,7 +401,7 @@ function DashboardContent({
                       <p className="text-xs text-muted-foreground">Insignias</p>
                     </div>
                   </div>
-                </CardContent>
+                </CardContent> 
               </Card>
             </motion.div>
           </motion.div>
@@ -472,7 +472,7 @@ function DashboardContent({
                   <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${quiz.difficulty === "easy" ? "bg-green-100 text-green-800" : quiz.difficulty === "medium" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>
                     {difficultyBadge}
                   </div>
-                </div>
+                </div> 
                 {completed && scorePct !== null && (
                   <div className="absolute top-2 right-2">
                     <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-500 text-white">
@@ -480,7 +480,7 @@ function DashboardContent({
                       {scorePct}%
                     </div>
                   </div>
-                )}
+                )} 
               </div>
 
               <div className="px-6 pb-4">
@@ -496,7 +496,7 @@ function DashboardContent({
                     <Trophy className="h-4 w-4" />
                     <span>{(quiz as any).points ?? "30 pts"}</span>
                   </div>
-                </div>
+                </div> 
 
                 <div className="flex items-center justify-between mt-4">
                   <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">{(quiz as any).category ?? "General"}</div>
@@ -505,7 +505,7 @@ function DashboardContent({
                     <Play className="h-4 w-4 mr-1" />
                     {completed ? "Repetir" : "Comenzar"}
                   </Link>
-                </div>
+                </div> 
               </div>
             </Card>
           )
@@ -521,7 +521,7 @@ function DashboardContent({
                   <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-500 text-white">
                     85%
                   </div>
-                </div>
+                </div> 
                 <div className="absolute top-2 left-2">
                   <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-100 text-green-800">Fácil</div>
                 </div>
@@ -534,7 +534,7 @@ function DashboardContent({
                   <div className="flex items-center gap-1"><Trophy className="h-4 w-4" /><span>30 pts</span></div>
                 </div>
                 <div className="flex items-center justify-between mt-4">
-                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Reciclaje Básico</div>
+                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Reciclaje Básico</div> 
                   <Link href="/quiz/1" className="inline-flex items-center h-8 px-3 rounded-md text-sm font-medium bg-primary text-primary-foreground">
                     <Play className="h-4 w-4 mr-1" />Repetir
                   </Link>
@@ -549,7 +549,7 @@ function DashboardContent({
                   <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800">Medio</div>
                 </div>
               </div>
-              <div className="px-6 pb-4">
+              <div className="px-6 pb-4"> 
                 <div className="font-semibold text-lg text-balance leading-tight">Clasificación de Plásticos</div>
                 <div className="text-muted-foreground text-sm mt-1">Identifica los diferentes tipos de plásticos y cómo reciclarlos correctamente</div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4">
@@ -557,7 +557,7 @@ function DashboardContent({
                   <div className="flex items-center gap-1"><Trophy className="h-4 w-4" /><span>50 pts</span></div>
                 </div>
                 <div className="flex items-center justify-between mt-4">
-                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Plásticos</div>
+                  <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">Plásticos</div> 
                   <Link href="/quiz/2" className="inline-flex items-center h-8 px-3 rounded-md text-sm font-medium bg-primary text-primary-foreground">
                     <Play className="h-4 w-4 mr-1" />Comenzar
                   </Link>
@@ -565,7 +565,7 @@ function DashboardContent({
               </div>
             </Card>
           </>
-        )}
+        )} 
       </motion.div>
     </motion.section>
         {/* ========================================================== */}
@@ -591,7 +591,7 @@ function DashboardContent({
                     <CardTitle>Recycling Time 2</CardTitle>
                   </div>
                   <CardDescription>Selecciona el residuo y llévalo a cada contenedor correcto</CardDescription>
-                </CardHeader>
+                </CardHeader> 
                 <CardContent>
                   <Button asChild>
                     <Link href="/juego1">Jugar</Link>
@@ -608,7 +608,7 @@ function DashboardContent({
                     <CardTitle>Clean Ocean</CardTitle>
                   </div>
                   <CardDescription>Ayuda a que los animales tengan un entorno limpio</CardDescription>
-                </CardHeader>
+                </CardHeader> 
                 <CardContent>
                   <Button asChild>
                     <Link href="/juego2">Jugar</Link>
@@ -649,7 +649,7 @@ function DashboardContent({
                       {achievement.name}
                     </p>
                   </Card>
-                </motion.div>
+                </motion.div> 
               ))
             ) : (
               <motion.p
@@ -657,7 +657,7 @@ function DashboardContent({
                 className="text-muted-foreground col-span-full"
               >
                 Aún no has ganado insignias. ¡Sigue jugando!
-              </motion.p>
+              </motion.p> 
             )}
           </motion.div>
         </motion.section>
@@ -665,7 +665,7 @@ function DashboardContent({
         
       </main>
     </div>
-  )
+  ) 
 } // Fin de DashboardContent
 
 
@@ -685,7 +685,7 @@ export default function DashboardPage() {
       async function fetchData() {
         try {
           setLoading(true)
-          
+          // 
           // --- SIMULACIÓN de usuario para desarrollo ---
           await new Promise(resolve => setTimeout(resolve, 500)); 
           const usuario = mockStudentUser; 
@@ -703,7 +703,7 @@ export default function DashboardPage() {
               // si el endpoint responde mal, no mostrar quizzes simulados
               setQuizzes([])
             }
-          } catch (err) {
+          } catch (err) { 
             // fallo de red / CORS / etc. => no mostrar simulados en UI
             console.error("Failed to fetch /api/quizzes:", err)
             setQuizzes([])
@@ -713,7 +713,7 @@ export default function DashboardPage() {
           console.error("Failed to fetch dashboard data:", error)
           setUser(null)
           setQuizzes([])
-        } finally {
+        } finally { 
           setLoading(false)
         }
       }
@@ -725,7 +725,7 @@ export default function DashboardPage() {
     <AuthGuard>
       {/* El Chatbot está ahora en el layout.tsx o aquí.
           Si lo moviste al layout, borra esta línea.
-          Si no, déjala aquí. */}
+          Si no, déjala aquí. */} 
       <RecyclingChatbot />
 
       {loading && (

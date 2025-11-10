@@ -1,5 +1,5 @@
 "use client"
-
+ 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,24 +30,67 @@ const allQuizzes: QuizCard[] = [
     description: "Aprende los conceptos básicos del reciclaje y su importancia para el medio ambiente",
     difficulty: "easy",
     category: "Reciclaje Básico",
-    imageUrl: "/recycling-basics.jpg",
+    imageUrl: "https://s1.significados.com/foto/reciclaje-og.jpg",
     completed: true,
     score: 85,
     estimatedTime: "5-8 min",
     totalPoints: 30,
   },
-  {
+  { 
     id: "2",
     title: "Clasificación de Plásticos",
     description: "Identifica los diferentes tipos de plásticos y cómo reciclarlos correctamente",
     difficulty: "medium",
     category: "Plásticos",
-    imageUrl: "/plastic-recycling-types.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?q=80&w=2070&auto=format&fit=crop",
     completed: false,
     estimatedTime: "8-12 min",
     totalPoints: 50,
   },
- 
+  {
+    id: "3",
+    title: "Reciclaje de Papel y Cartón",
+    description: "Domina las técnicas para reciclar papel y cartón de forma eficiente.",
+    difficulty: "easy",
+    category: "Papel y Cartón",
+    imageUrl: "https://www.smurfitkappa.com/sv/-/m/images/blog-thumbnail-931-x-642/recycling.jpg?rev=-1",
+    completed: false,
+    estimatedTime: "4-6 min",
+    totalPoints: 20,
+  },
+  {
+    id: "4",
+    title: "Manejo de Residuos Electrónicos",
+    description: "Aprende a desechar de forma segura tus aparatos electrónicos viejos.",
+    difficulty: "medium",
+    category: "Electrónicos",
+    imageUrl: "https://cdn.shopify.com/s/files/1/0593/4235/6578/files/electronic-recycling_600x600.jpg?v=1736681101",
+    completed: false,
+    estimatedTime: "7-10 min",
+    totalPoints: 40,
+  },
+  {
+    id: "5",
+    title: "El Arte del Compostaje",
+    description: "Convierte tus residuos orgánicos en abono rico en nutrientes para tus plantas.",
+    difficulty: "medium",
+    category: "Orgánicos",
+    imageUrl: "https://www.prisma.org.pe/wp-content/uploads/compost-en-casa-con-residuos-organicos.jpg",
+    completed: false,
+    estimatedTime: "10-15 min",
+    totalPoints: 60,
+  },
+  {
+    id: "6",
+    title: "Todo sobre el Vidrio",
+    description: "Descubre por qué el vidrio es un material infinitamente reciclable y cómo tratarlo.",
+    difficulty: "easy",
+    category: "Vidrio",
+    imageUrl: "https://traperosdeemauslimaperu.org/images/2025/10/17/reciclaje-vidrio.jpg",
+    completed: false,
+    estimatedTime: "5-7 min",
+    totalPoints: 30,
+  },
 ]
 
 const categories = ["Todos", "Reciclaje Básico", "Plásticos", "Papel y Cartón", "Electrónicos", "Orgánicos", "Vidrio"]
@@ -57,7 +100,7 @@ function QuizzesContent() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todos")
   const [selectedDifficulty, setSelectedDifficulty] = useState("Todos")
-
+ 
   const filteredQuizzes = allQuizzes.filter((quiz) => {
     const matchesSearch =
       quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -65,7 +108,7 @@ function QuizzesContent() {
     const matchesCategory = selectedCategory === "Todos" || quiz.category === selectedCategory
     const matchesDifficulty = selectedDifficulty === "Todos" || quiz.difficulty === selectedDifficulty
 
-    return matchesSearch && matchesCategory && matchesDifficulty
+    return matchesSearch && matchesCategory && matchesDifficulty;
   })
 
   const getDifficultyColor = (difficulty: string) => {
@@ -78,7 +121,7 @@ function QuizzesContent() {
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
-    }
+    };
   }
 
   const getDifficultyLabel = (difficulty: string) => {
@@ -91,7 +134,7 @@ function QuizzesContent() {
         return "Difícil"
       default:
         return difficulty
-    }
+    };
   }
 
   return (
@@ -112,7 +155,7 @@ function QuizzesContent() {
                 <h1 className="text-xl font-bold text-foreground">Todos los Quizzes</h1>
                 <p className="text-sm text-muted-foreground">{filteredQuizzes.length} quizzes disponibles</p>
               </div>
-            </div>
+            </div> 
           </div>
         </div>
       </header>
@@ -137,7 +180,7 @@ function QuizzesContent() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
                   />
-                </div>
+                </div> 
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-full sm:w-48">
@@ -149,7 +192,7 @@ function QuizzesContent() {
                       {category}
                     </SelectItem>
                   ))}
-                </SelectContent>
+                </SelectContent> 
               </Select>
               <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                 <SelectTrigger className="w-full sm:w-48">
@@ -161,7 +204,7 @@ function QuizzesContent() {
                       {difficulty === "Todos" ? "Todos" : getDifficultyLabel(difficulty)}
                     </SelectItem>
                   ))}
-                </SelectContent>
+                </SelectContent> 
               </Select>
             </div>
           </CardContent>
@@ -194,7 +237,7 @@ function QuizzesContent() {
                         <Trophy className="h-3 w-3 mr-1" />
                         {quiz.score}%
                       </Badge>
-                    </div>
+                    </div> 
                   )}
                   <div className="absolute top-2 left-2">
                     <Badge className={getDifficultyColor(quiz.difficulty)} variant="secondary">
@@ -214,7 +257,7 @@ function QuizzesContent() {
                       <Trophy className="h-4 w-4" />
                       <span>{quiz.totalPoints} pts</span>
                     </div>
-                  </div>
+                  </div> 
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between">
@@ -224,7 +267,7 @@ function QuizzesContent() {
                         <Play className="h-4 w-4 mr-1" />
                         {quiz.completed ? "Repetir" : "Comenzar"}
                       </Link>
-                    </Button>
+                    </Button> 
                   </div>
                 </CardContent>
               </Card>
@@ -232,7 +275,7 @@ function QuizzesContent() {
           </div>
         )}
       </main>
-    </div>
+    </div> 
   )
 }
 

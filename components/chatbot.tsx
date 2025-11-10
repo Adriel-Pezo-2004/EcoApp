@@ -1,12 +1,18 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import * as tmImage from "@teachablemachine/image"
+import { Leaf, Paperclip, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Leaf } from "lucide-react"
 import { motion } from "framer-motion"
 
-// 1. LA BASE DE DATOS DEL CHATBOT VA AQUÍ
+// Base de datos del chatbot
 const recyclingAnswers: { keywords: string[]; answer: string }[] = [
+  {
+    keywords: ["botella", "botellas"],
+    answer:
+      "¡Claro! Con las botellas puedes hacer muchas cosas. Si son de plástico (PET), vacíalas, aplástalas y ponles la tapa para reciclarlas. Si son de vidrio, enjuágalas y llévalas al contenedor verde. También puedes reutilizarlas para guardar agua, como macetas o para hacer manualidades.",
+  },
   {
     keywords: ["plástico", "plastico", "pet", "hdpe", "pvc"],
     answer:
@@ -250,7 +256,7 @@ const recyclingAnswers: { keywords: string[]; answer: string }[] = [
       "En la escuela puedes: separar residuos, crear contenedores, educar a compañeros y organizar campañas de reciclaje.",
   },
   {
-    keywords: ["casa", "hogar", "familIA"],
+    keywords: ["casa", "hogar", "familia"],
     answer:
       "En casa inicia con contenedores para cada tipo de residuo, involucra a tu familia y establece rutinas de separación.",
   },
@@ -313,19 +319,25 @@ const recyclingAnswers: { keywords: string[]; answer: string }[] = [
   },
 ]
 
-// 2. EXPORTAMOS LA FUNCIÓN DEL CHATBOT
 export default function RecyclingChatbot() {
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<
-    { from: "user" | "bot"; text: string }[]
+    { from: "user" | "bot"; text: string; image?: string }[]
   >([])
+  const [model, setModel] = useState<tmImage.CustomMobileNet | null>(null)
+  const [isModelLoading, setIsModelLoading] = useState(false)
+
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
+
+  const modelURL = "/model/model.json"
+  const metadataURL = "/model/metadata.json"
 
   useEffect(() => {
     scrollToBottom()
@@ -337,9 +349,26 @@ export default function RecyclingChatbot() {
     }
   }, [open])
 
+  useEffect(() => {
+    if (open && !model && !isModelLoading) {
+      setIsModelLoading(true)
+      const loadModel = async () => {
+        try {
+          const loadedModel = await tmImage.load(modelURL, metadataURL)
+          setModel(loadedModel)
+        } catch (error) {
+          console.error("Error al cargar el modelo:", error)
+        } finally {
+          setIsModelLoading(false)
+        }
+      }
+      loadModel()
+    }
+  }, [open, model, isModelLoading])
+
   const handleSend = () => {
     if (!input.trim()) return
-    const newMessages: { from: "user" | "bot"; text: string }[] = [...messages, { from: "user", text: input }]
+    const newMessages = [...messages, { from: "user" as const, text: input }]
     setMessages(newMessages)
 
     const lowerInput = input.toLowerCase()
@@ -356,6 +385,52 @@ export default function RecyclingChatbot() {
 
     setInput("")
     inputRef.current?.focus()
+  }
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file || !model) return;
+
+    // Convertir la imagen a un formato base64 para guardarla en el estado
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const imageUrl = e.target?.result as string;
+      if (!imageUrl) return;
+
+      const newMessages = [
+        ...messages,
+        { from: "user" as const, text: "Analiza esta imagen:", image: imageUrl },
+      ];
+      setMessages(newMessages);
+
+      const imageElement = new Image();
+      imageElement.src = imageUrl;
+      imageElement.onload = async () => {
+        const prediction = await model.predict(imageElement);
+        prediction.sort((a, b) => b.probability - a.probability);
+
+        const bestPrediction = prediction[0];
+        const predictionClassName = bestPrediction.className.toLowerCase();
+
+        // Buscar la respuesta de reciclaje correspondiente
+        const foundAnswer = recyclingAnswers.find((ans) =>
+          ans.keywords.some((kw) => predictionClassName.includes(kw))
+        );
+
+        let botReply = `Creo que esto es: **${bestPrediction.className}** (confianza: ${(bestPrediction.probability * 100).toFixed(0)}%).`;
+
+        if (foundAnswer) {
+          botReply += `\n\n${foundAnswer.answer}`;
+        } else {
+          botReply += `\n\nNo tengo información de reciclaje específica para este objeto.`;
+        }
+
+        setMessages((prev) => [...prev, { from: "bot", text: botReply }]);
+      }
+    };
   }
 
   return (
@@ -403,17 +478,24 @@ export default function RecyclingChatbot() {
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex ${
-                    msg.from === "user" ? "justify-end" : "justify-start"
+                  className={`flex flex-col ${
+                    msg.from === "user" ? "items-end" : "items-start"
                   }`}
                 >
                   <div
-                    className={`p-3 rounded-lg max-w-[80%] text-sm ${
+                    className={`p-2 rounded-lg max-w-[80%] text-sm ${
                       msg.from === "user"
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-foreground"
                     }`}
                   >
+                    {msg.image && (
+                      <img
+                        src={msg.image}
+                        alt="User upload"
+                        className="rounded-md mb-2 max-h-40"
+                      />
+                    )}
                     {msg.text}
                   </div>
                 </div>
@@ -430,6 +512,26 @@ export default function RecyclingChatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageUpload}
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isModelLoading || !model}
+                aria-label="Subir imagen"
+              >
+                {isModelLoading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Paperclip className="h-5 w-5" />
+                )}
+              </Button>
               <Button size="sm" onClick={handleSend}>
                 Enviar
               </Button>

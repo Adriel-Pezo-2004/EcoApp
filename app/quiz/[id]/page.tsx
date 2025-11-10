@@ -1,5 +1,5 @@
 "use client"
-
+ 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Leaf, ArrowLeft, ArrowRight, CheckCircle, XCircle, Trophy, Clock, RotateCcw } from "lucide-react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { AuthGuard } from "@/components/auth-guard"
+import { AuthGuard } from "@/components/auth-guard" // Asegúrate de que AuthGuard no interfiera con las pruebas si no es necesario
 import { motion, AnimatePresence } from "framer-motion"
 
 interface Question {
@@ -39,7 +39,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Aprende los conceptos básicos del reciclaje",
     difficulty: "easy",
     category: "Reciclaje Básico",
-    imageUrl: "/recycling-basics.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1591183622433-866a5a1d355c?q=80&w=2070&auto=format&fit=crop",
     questions: [
       {
         id: "1",
@@ -73,6 +73,24 @@ const mockQuizzes: Record<string, Quiz> = {
         explanation:
           "Los pañales desechables contienen múltiples materiales difíciles de separar y no son reciclables en los sistemas convencionales.",
       },
+      {
+        id: "4",
+        question: "¿Qué color de contenedor se usa generalmente para el papel y cartón?",
+        options: ["Verde", "Azul", "Amarillo", "Gris"],
+        correct: 1,
+        points: 10,
+        explanation:
+          "El contenedor azul es el estándar en muchos lugares para depositar papel y cartón, facilitando su recolección y reciclaje.",
+      },
+      {
+        id: "5",
+        question: "¿Por qué es importante lavar los envases antes de reciclarlos?",
+        options: ["Para que huelan bien", "Para evitar la contaminación de otros materiales", "Es un mito, no es necesario", "Para que ocupen menos espacio"],
+        correct: 1,
+        points: 10,
+        explanation:
+          "Lavar los envases elimina restos de comida y otros contaminantes que pueden arruinar lotes enteros de material reciclable, especialmente el papel.",
+      },
     ],
   },
   "2": {
@@ -81,7 +99,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Identifica los diferentes tipos de plásticos",
     difficulty: "medium",
     category: "Plásticos",
-    imageUrl: "/plastic-recycling-types.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?q=80&w=2070&auto=format&fit=crop",
     questions: [
       {
         id: "1",
@@ -100,6 +118,225 @@ const mockQuizzes: Record<string, Quiz> = {
         points: 15,
         explanation:
           "El PET es el plástico más reciclado debido a su uso extensivo en botellas y su facilidad de procesamiento.",
+      },
+      {
+        id: "3",
+        question: "¿Qué tipo de plástico (HDPE) se encuentra comúnmente en envases de leche y detergente?",
+        options: ["1 (PET)", "2 (HDPE)", "3 (PVC)", "5 (PP)"],
+        correct: 1,
+        points: 15,
+        explanation:
+          "El número 2 (HDPE o Polietileno de Alta Densidad) es un plástico rígido utilizado para envases de leche, detergentes y otros productos de limpieza.",
+      },
+      {
+        id: "4",
+        question: "El poliestireno (unicel o telgopor), marcado con el número 6, es...",
+        options: ["Fácilmente reciclable en cualquier contenedor", "No reciclable en la mayoría de los sistemas", "Compostable", "Se recicla con el cartón"],
+        correct: 1,
+        points: 15,
+        explanation:
+          "El poliestireno (PS) es técnicamente reciclable, pero muy pocos centros lo aceptan debido a su bajo peso y alto volumen, lo que lo hace poco rentable.",
+      },
+      {
+        id: "5",
+        question: "¿Qué significa el número 7 en la clasificación de plásticos?",
+        options: ["Es el más seguro para alimentos", "Es una mezcla de varios plásticos o 'Otros'", "Es exclusivo para juguetes", "Es biodegradable"],
+        correct: 1,
+        points: 15,
+        explanation:
+          "El número 7 agrupa a una variedad de plásticos que no encajan en las otras categorías, como el policarbonato (PC) y nuevas resinas, lo que dificulta su reciclaje.",
+      },
+    ],
+  },
+  "3": {
+    id: "3",
+    title: "Reciclaje de Papel y Cartón",
+    description: "Domina las técnicas para reciclar papel y cartón de forma eficiente.",
+    difficulty: "easy",
+    category: "Papel y Cartón",
+    imageUrl: "https://images.unsplash.com/photo-1542037104857-4bb4b9fe13ab?q=80&w=2070&auto=format&fit=crop",
+    questions: [
+      {
+        id: "1",
+        question: "¿Se puede reciclar el cartón de una caja de pizza con grasa?",
+        options: ["Sí, siempre", "No, la grasa contamina el papel", "Solo si se quita el queso", "Sí, pero en el contenedor de orgánicos"],
+        correct: 1,
+        points: 10,
+        explanation: "La grasa y los restos de comida contaminan las fibras del papel, impidiendo que se reciclen correctamente. Solo las partes limpias del cartón son reciclables.",
+      },
+      {
+        id: "2",
+        question: "¿Qué tipo de papel NO se debe reciclar en el contenedor azul?",
+        options: ["Periódicos y revistas", "Papel de cocina usado", "Folios de oficina", "Cajas de cereales"],
+        correct: 1,
+        points: 10,
+        explanation: "El papel de cocina, servilletas o pañuelos usados están contaminados con materia orgánica y deben ir al contenedor de restos o al de compostaje si es posible.",
+      },
+      {
+        id: "3",
+        question: "¿Es necesario quitar las cintas adhesivas y grapas de las cajas de cartón?",
+        options: ["Sí, siempre se debe quitar todo", "No, los procesos de reciclaje modernos pueden separarlos", "Solo si la cinta es de plástico", "Depende del color del cartón"],
+        correct: 1,
+        points: 10,
+        explanation: "Aunque se agradece, no es estrictamente necesario. Las plantas de reciclaje tienen sistemas para separar estos contaminantes (como plásticos y metales) durante el proceso de pulpado.",
+      },
+      {
+        id: "4",
+        question: "¿Qué se hace con el papel y cartón una vez reciclado?",
+        options: ["Se quema para generar energía", "Se entierra en vertederos especiales", "Se convierte en nuevos productos de papel y cartón", "Se usa como alimento para animales"],
+        correct: 2,
+        points: 10,
+        explanation: "Las fibras de celulosa se reutilizan para fabricar nuevos productos como cajas de cartón, papel de periódico, cartulinas y otros materiales de papel.",
+      },
+      {
+        id: "5",
+        question: "¿El papel fotográfico se puede reciclar junto con el papel normal?",
+        options: ["Sí, es igual que cualquier otro papel", "No, debido a su recubrimiento plástico y químico", "Solo si se le quita la foto", "Sí, pero en el contenedor de plásticos"],
+        correct: 1,
+        points: 10,
+        explanation: "El papel fotográfico tiene una capa de emulsión plástica que lo hace no apto para el reciclaje convencional de papel. Debe ir a la basura común.",
+      },
+    ],
+  },
+  "4": {
+    id: "4",
+    title: "Manejo de Residuos Electrónicos",
+    description: "Aprende a desechar de forma segura tus aparatos electrónicos viejos.",
+    difficulty: "medium",
+    category: "Electrónicos",
+    imageUrl: "https://images.unsplash.com/photo-1604187351543-03948b0453c7?q=80&w=1974&auto=format&fit=crop",
+    questions: [
+      {
+        id: "1",
+        question: "¿Dónde debes desechar las baterías y pilas usadas?",
+        options: ["En la basura común", "En el contenedor de plásticos", "En puntos de recolección específicos", "En el desagüe"],
+        correct: 2,
+        points: 15,
+        explanation: "Las pilas y baterías contienen metales pesados y químicos tóxicos que contaminan el suelo y el agua. Deben llevarse a puntos limpios o contenedores especiales.",
+      },
+      {
+        id: "2",
+        question: "¿Qué significa el término 'e-waste'?",
+        options: ["Basura extra grande", "Residuos de aparatos eléctricos y electrónicos", "Envases de plástico especiales", "Basura ecológica"],
+        correct: 1,
+        points: 10,
+        explanation: "'E-waste' (o RAEE en español) se refiere a todos los dispositivos electrónicos que han llegado al final de su vida útil, como celulares, computadoras, televisores, etc.",
+      },
+      {
+        id: "3",
+        question: "¿Por qué es peligroso tirar un celular viejo a la basura común?",
+        options: ["Puede explotar", "Ocupa mucho espacio", "Contiene metales pesados que contaminan", "Atrae a los roedores"],
+        correct: 2,
+        points: 15,
+        explanation: "Los celulares contienen sustancias tóxicas como plomo, mercurio y cadmio, que pueden filtrarse en el suelo y el agua si no se gestionan adecuadamente.",
+      },
+      {
+        id: "4",
+        question: "Un cable de cargador roto, ¿dónde debería desecharse?",
+        options: ["En la basura común", "En el contenedor de plásticos", "En un punto de recolección de e-waste", "En el contenedor de metales"],
+        correct: 2,
+        points: 10,
+        explanation: "Los cables son considerados residuos electrónicos y deben ser llevados a puntos de recolección especializados para su correcto tratamiento y reciclaje.",
+      },
+      {
+        id: "5",
+        question: "Antes de reciclar una computadora o celular, ¿qué es recomendable hacer por seguridad?",
+        options: ["Quitarle la batería", "Limpiarlo con un paño húmedo", "Borrar toda tu información personal", "Romper la pantalla"],
+        correct: 2,
+        points: 15,
+        explanation: "Es fundamental borrar de forma segura toda tu información personal y restaurar el dispositivo a su estado de fábrica para proteger tu privacidad antes de reciclarlo.",
+      },
+    ],
+  },
+  "5": {
+    id: "5",
+    title: "El Arte del Compostaje",
+    description: "Convierte tus residuos orgánicos en abono rico en nutrientes para tus plantas.",
+    difficulty: "medium",
+    category: "Orgánicos",
+    imageUrl: "https://images.unsplash.com/photo-1593118533889-9422b6415c9c?q=80&w=2070&auto=format&fit=crop",
+    questions: [
+      {
+        id: "1",
+        question: "¿Cuál de estos elementos es un 'residuo verde' ideal para el compostaje?",
+        options: ["Restos de carne", "Cáscaras de plátano", "Aceite de cocina", "Huesos"],
+        correct: 1,
+        points: 15,
+        explanation: "Los residuos verdes, como restos de frutas y verduras, son ricos en nitrógeno y se descomponen rápidamente, siendo ideales para iniciar el compostaje.",
+      },
+      {
+        id: "2",
+        question: "¿Cuál de estos es un 'residuo marrón', rico en carbono, para el compostaje?",
+        options: ["Césped recién cortado", "Restos de café", "Hojas secas y ramas", "Cáscaras de huevo"],
+        correct: 2,
+        points: 10,
+        explanation: "Los residuos marrones, como hojas secas, cartón o aserrín, aportan carbono a la composta, equilibrando la mezcla y ayudando a la aireación.",
+      },
+      {
+        id: "3",
+        question: "¿Qué residuo NO se recomienda añadir a una composta casera?",
+        options: ["Filtros de café", "Pelo y uñas", "Productos lácteos y carne", "Servilletas de papel"],
+        correct: 2,
+        points: 15,
+        explanation: "Los restos de carne, pescado y productos lácteos pueden generar malos olores y atraer plagas, por lo que generalmente se evitan en el compostaje doméstico.",
+      },
+      {
+        id: "4",
+        question: "¿Para qué sirve voltear o airear la pila de composta regularmente?",
+        options: ["Para que se vea más ordenada", "Para acelerar la descomposición y evitar malos olores", "Para enfriarla", "Para atraer más insectos beneficiosos"],
+        correct: 1,
+        points: 10,
+        explanation: "Airear la composta proporciona el oxígeno necesario para que los microorganismos aeróbicos trabajen eficientemente, acelerando el proceso y previniendo olores desagradables.",
+      },
+      {
+        id: "5",
+        question: "El resultado final del compostaje es un material oscuro y rico en nutrientes llamado:",
+        options: ["Tierra de diatomeas", "Turba", "Humus", "Arcilla"],
+        correct: 2,
+        points: 15,
+        explanation: "El humus es el producto final estable del compostaje. Es un abono orgánico de alta calidad, excelente para mejorar la estructura y fertilidad del suelo.",
+      },
+    ],
+  },
+  "6": {
+    id: "6",
+    title: "Todo sobre el Vidrio",
+    description: "Descubre por qué el vidrio es un material infinitamente reciclable y cómo tratarlo.",
+    difficulty: "easy",
+    category: "Vidrio",
+    imageUrl: "https://images.unsplash.com/photo-1588282322673-c31965a75c3e?q=80&w=2070&auto=format&fit=crop",
+    questions: [
+      {
+        id: "1",
+        question: "¿El vidrio se puede reciclar infinitas veces sin perder su calidad?",
+        options: ["Sí, es 100% reciclable indefinidamente", "No, solo se puede reciclar 2 o 3 veces", "Depende del color del vidrio", "No, pierde transparencia con cada ciclo"],
+        correct: 0,
+        points: 10,
+        explanation: "El vidrio es un material noble que puede ser reciclado una y otra vez sin perder sus propiedades ni su calidad, lo que lo hace extremadamente sostenible.",
+      },
+      {
+        id: "2",
+        question: "¿Qué color de contenedor se utiliza habitualmente para depositar el vidrio?",
+        options: ["Amarillo", "Azul", "Verde", "Gris"],
+        correct: 2,
+        points: 10,
+        explanation: "El contenedor verde (iglú) es el destinado exclusivamente para el reciclaje de envases de vidrio como botellas, frascos y tarros.",
+      },
+      {
+        id: "3",
+        question: "¿Se deben quitar las tapas y tapones de los envases de vidrio antes de reciclarlos?",
+        options: ["No, se reciclan junto con el vidrio", "Solo si son de metal", "Sí, deben depositarse en el contenedor correspondiente", "Solo si son de plástico"],
+        correct: 2,
+        points: 10,
+        explanation: "Sí, las tapas (de metal o plástico) deben retirarse y depositarse en el contenedor amarillo para que ambos materiales puedan ser reciclados correctamente por separado.",
+      },
+      {
+        id: "4",
+        question: "¿Cuál de estos objetos de vidrio NO debe tirarse al contenedor verde?",
+        options: ["Una botella de vino", "Un frasco de mermelada", "Un vaso de cristal roto", "Una botella de cerveza"],
+        correct: 2,
+        points: 15,
+        explanation: "Los vasos, copas de cristal, espejos o bombillas tienen una composición diferente a la del vidrio de los envases y no deben mezclarse, ya que contaminan el proceso de reciclaje.",
       },
     ],
   },
@@ -223,7 +460,7 @@ function QuizContent() {
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
-    }
+    };
   }
 
   if (!quizStarted) {
@@ -247,7 +484,7 @@ function QuizContent() {
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Volver
                 </Link>
-              </Button>
+              </Button> 
               <Leaf className="h-6 w-6 text-primary" />
               <span className="font-semibold">EcoQuiz</span>
             </div>
@@ -280,7 +517,7 @@ function QuizContent() {
                     <Badge className={getDifficultyColor(quiz.difficulty)} variant="secondary">
                       {quiz.difficulty}
                     </Badge>
-                  </div>
+                  </div> 
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-2 gap-4 text-sm">
@@ -292,7 +529,7 @@ function QuizContent() {
                       <Trophy className="h-4 w-4 text-muted-foreground" />
                       <span>{quiz.questions.reduce((acc, q) => acc + q.points, 0)} puntos</span>
                     </div>
-                  </div>
+                  </div> 
 
                   <div className="space-y-2">
                     <h4 className="font-medium">Instrucciones:</h4>
@@ -305,7 +542,7 @@ function QuizContent() {
                   </div>
 
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    <Button size="lg" className="w-full" onClick={() => setQuizStarted(true)}>
+                    <Button size="lg" className="w-full" onClick={() => setQuizStarted(true)} data-testid="start-quiz-button">
                       Comenzar Quiz
                     </Button>
                   </motion.div>
@@ -366,7 +603,7 @@ function QuizContent() {
                       ? "Has completado el quiz exitosamente"
                       : "Puedes intentarlo de nuevo para mejorar tu puntuación"}
                   </CardDescription>
-                </CardHeader>
+                </CardHeader> 
                 <CardContent className="space-y-4">
                   <motion.div
                     className="text-4xl font-bold text-primary"
@@ -387,7 +624,7 @@ function QuizContent() {
                       <RotateCcw className="h-4 w-4 mr-1" />
                       Intentar de nuevo
                     </Button>
-                  </div>
+                  </div> 
                 </CardContent>
               </Card>
             </motion.div>
@@ -432,7 +669,7 @@ function QuizContent() {
                                   <span className="font-medium">Respuesta correcta:</span>{" "}
                                   <span className="text-green-600">{question.options[question.correct]}</span>
                                 </p>
-                              )}
+                              )} 
                             </div>
                           </div>
                         </div>
@@ -443,7 +680,7 @@ function QuizContent() {
                             <p className="text-sm text-pretty">{question.explanation}</p>
                           </div>
                         </CardContent>
-                      )}
+                      )} 
                     </Card>
                   </motion.div>
                 )
@@ -482,7 +719,7 @@ function QuizContent() {
                 <Clock className="h-4 w-4" />
                 <span className={timeLeft < 60 ? "text-red-500 font-medium" : ""}>{formatTime(timeLeft)}</span>
               </div>
-            </div>
+            </div> 
           </div>
           <Progress value={progress} className="mt-2" />
         </div>
@@ -507,7 +744,7 @@ function QuizContent() {
                 <CardHeader>
                   <CardTitle className="text-xl text-balance">{question.question}</CardTitle>
                   <CardDescription>{question.points} puntos</CardDescription>
-                </CardHeader>
+                </CardHeader> 
                 <CardContent className="space-y-6">
                   <RadioGroup
                     value={selectedAnswers[currentQuestion]?.toString()}
@@ -526,7 +763,7 @@ function QuizContent() {
                         <Label htmlFor={`option-${index}`} className="flex-1 text-pretty cursor-pointer">
                           {option}
                         </Label>
-                      </motion.div>
+                      </motion.div> 
                     ))}
                   </RadioGroup>
 
@@ -542,7 +779,7 @@ function QuizContent() {
                         {currentQuestion === quiz.questions.length - 1 ? "Finalizar" : "Siguiente"}
                         {currentQuestion !== quiz.questions.length - 1 && <ArrowRight className="h-4 w-4 ml-1" />}
                       </Button>
-                    </motion.div>
+                    </motion.div> 
                   </div>
                 </CardContent>
               </Card>
@@ -550,7 +787,7 @@ function QuizContent() {
           </AnimatePresence>
         </div>
       </main>
-    </div>
+    </div> 
   )
 }
 
