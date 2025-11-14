@@ -1,1 +1,1 @@
-{"tfjsVersion":"1.7.4","tmVersion":"2.4.10","packageVersion":"0.8.4-alpha2","packageName":"@teachablemachine/image","timeStamp":"2025-11-10T02:45:33.463Z","userMetadata":{},"modelName":"EcoQuiz Modelo","labels":["Envase HDPE","Botella PET","Bolsa Plástica","Cartones"],"imageSize":224}
+{"tfjsVersion":"1.7.4","tmVersion":"2.4.10","packageVersion":"0.8.4-alpha2","packageName":"@teachablemachine/image","timeStamp":"2025-11-14T18:51:01.588Z","userMetadata":{},"modelName":"EcoQuiz Modelo","labels":["Envase HDPE","Botella PET","Bolsa Plástica","Cartones","Persona"],"imageSize":224}

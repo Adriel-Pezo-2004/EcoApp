@@ -157,9 +157,7 @@ export default function LoginPage() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
-                  <Link href="/forgot-password" className="text-sm text-primary hover:underline">
-                    ¿Olvidaste tu contraseña?
-                  </Link>
+          
                 </motion.div>
 
                 <motion.div
