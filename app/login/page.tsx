@@ -34,11 +34,12 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError("Credenciales inválidas")
-      } else {
-        // Verify session was created
-        const session = await getSession()
-        if (session) {
-          router.push("/dashboard")
+      } else if (result?.ok) {
+        // Redirección directa basada en el email
+        if (email === "johan.vargas@smsoca.edu.pe") {
+          router.push("/teacher-dashboard")
+        } else {
+          router.push("/student-dashboard")
         }
       }
     } catch (error) {

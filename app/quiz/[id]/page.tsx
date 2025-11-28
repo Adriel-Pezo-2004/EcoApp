@@ -39,7 +39,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Aprende los conceptos básicos del reciclaje",
     difficulty: "easy",
     category: "Reciclaje Básico",
-    imageUrl: "https://images.unsplash.com/photo-1591183622433-866a5a1d355c?q=80&w=2070&auto=format&fit=crop",
+    imageUrl: "https://s1.significados.com/foto/reciclaje-og.jpg",
     questions: [
       {
         id: "1",
@@ -154,7 +154,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Domina las técnicas para reciclar papel y cartón de forma eficiente.",
     difficulty: "easy",
     category: "Papel y Cartón",
-    imageUrl: "https://images.unsplash.com/photo-1542037104857-4bb4b9fe13ab?q=80&w=2070&auto=format&fit=crop",
+    imageUrl: "https://www.smurfitkappa.com/sv/-/m/images/blog-thumbnail-931-x-642/recycling.jpg?rev=-1",
     questions: [
       {
         id: "1",
@@ -204,7 +204,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Aprende a desechar de forma segura tus aparatos electrónicos viejos.",
     difficulty: "medium",
     category: "Electrónicos",
-    imageUrl: "https://images.unsplash.com/photo-1604187351543-03948b0453c7?q=80&w=1974&auto=format&fit=crop",
+    imageUrl: "https://cdn.shopify.com/s/files/1/0593/4235/6578/files/electronic-recycling_600x600.jpg?v=1736681101",
     questions: [
       {
         id: "1",
@@ -254,7 +254,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Convierte tus residuos orgánicos en abono rico en nutrientes para tus plantas.",
     difficulty: "medium",
     category: "Orgánicos",
-    imageUrl: "https://images.unsplash.com/photo-1593118533889-9422b6415c9c?q=80&w=2070&auto=format&fit=crop",
+    imageUrl: "https://www.prisma.org.pe/wp-content/uploads/compost-en-casa-con-residuos-organicos.jpg",
     questions: [
       {
         id: "1",
@@ -304,7 +304,7 @@ const mockQuizzes: Record<string, Quiz> = {
     description: "Descubre por qué el vidrio es un material infinitamente reciclable y cómo tratarlo.",
     difficulty: "easy",
     category: "Vidrio",
-    imageUrl: "https://images.unsplash.com/photo-1588282322673-c31965a75c3e?q=80&w=2070&auto=format&fit=crop",
+    imageUrl: "https://traperosdeemauslimaperu.org/images/2025/10/17/reciclaje-vidrio.jpg",
     questions: [
       {
         id: "1",

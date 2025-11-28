@@ -1,0 +1,459 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  Leaf,
+  Trophy,
+  BookOpen,
+  Target,
+  TrendingUp,
+  Star,
+  Play,
+  Clock,
+  Award,
+  LogOut,
+  Gamepad2,
+} from "lucide-react"
+import { AuthGuard } from "@/components/auth-guard"
+import { logout } from "@/lib/auth"
+import RecyclingChatbot from "@/components/chatbot"
+import type { FullUserData } from "@/types/user" // Usaremos un tipo centralizado
+import type { Quiz } from "@prisma/client"
+
+// --- DATOS DE SIMULACIÓN ---
+const mockStudentUser: FullUserData = {
+  id: "mock-student-id",
+  email: "estudiante@prueba.com",
+  name: "Estudiante de Prueba",
+  password: "hashedpassword",
+  avatar: "",
+  level: 2,
+  points: 650,
+  role: "STUDENT",
+  teacherId: "mock-teacher-id",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  achievements: [
+    { id: "ach1", userId: "mock-student-id", name: "Primeros Pasos", description: "Completaste tu primer quiz.", icon: "star", unlockedAt: new Date() },
+    { id: "ach2", userId: "mock-student-id", name: "Eco-Aprendiz", description: "Llegaste a nivel 2.", icon: "leaf", unlockedAt: new Date() },
+  ],
+  quizAttempts: [
+    { quizId: '1', score: 85, totalPoints: 100, quiz: { id: '1', title: 'Fundamentos del Reciclaje', description: '', category: '', difficulty: 'easy', imageUrl: null, isActive: true, createdAt: new Date(), updatedAt: new Date() } }
+  ],
+  students: [],
+}
+
+const mockQuizzes: Quiz[] = [
+  { id: '1', title: 'Fundamentos del Reciclaje', description: 'Aprende los conceptos básicos del reciclaje y su importancia.', category: 'Reciclaje Básico', difficulty: 'easy', imageUrl: '/recycling-basics.jpg', isActive: true, createdAt: new Date(), updatedAt: new Date() },
+  { id: '2', title: 'Clasificación de Plásticos', description: 'Identifica los diferentes tipos de plásticos y cómo reciclarlos.', category: 'Plásticos', difficulty: 'medium', imageUrl: '/plastic-recycling-types.jpg', isActive: true, createdAt: new Date(), updatedAt: new Date() },
+]
+// --- FIN DE DATOS DE SIMULACIÓN ---
+
+export default function StudentDashboardPage() {
+  // Usamos los datos de simulación directamente.
+  const user = mockStudentUser
+  const quizzes = mockQuizzes
+
+  return (
+    <AuthGuard>
+      {/* El chatbot se renderiza aquí para estar disponible en toda la página */}
+      <RecyclingChatbot />
+
+      {/* Pasamos los datos de simulación al componente de la UI */}
+      <StudentDashboardUI user={user} quizzes={quizzes} />
+    </AuthGuard>
+  )
+}
+
+/**
+ * Este es el componente que renderiza la interfaz de usuario.
+ * Lo separamos para mantener la lógica de carga de datos (ahora simulada) aparte.
+ */
+function StudentDashboardUI({ user, quizzes }: { user: FullUserData; quizzes: Quiz[] }) {
+  const router = useRouter()
+
+  const handleLogout = () => {
+    logout()
+    router.push("/")
+  }
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  }
+
+  const cardHoverVariants = {
+    hover: {
+      scale: 1.02,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  }
+
+  // Lógica para progreso (asumiendo 500 puntos por nivel)
+  const pointsPerLevel = 500
+  const currentLevelPoints = user.points % pointsPerLevel
+  const progressPercentage = (currentLevelPoints / pointsPerLevel) * 100
+  const pointsToNextLevel = pointsPerLevel - currentLevelPoints
+
+  return (
+    <div className="min-h-screen bg-background pb-12">
+      {/* Header */}
+      <motion.header
+        className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="container-mobile container-tablet container-desktop py-4">
+          <div className="flex items-center justify-between">
+            <motion.div
+              className="flex items-center gap-3"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Leaf className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-xl font-bold text-foreground">EcoQuiz</h1>
+                <p className="text-sm text-muted-foreground">Dashboard</p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="flex items-center gap-3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <div className="hidden sm:flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">{user.points} pts</span>
+              </div>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.avatar || "/placeholder.svg"} />
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  {user.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </motion.header>
+
+      <main className="container-mobile container-tablet container-desktop py-6 space-y-8">
+        {/* Welcome Section */}
+        <motion.section variants={containerVariants} initial="hidden" animate="visible">
+          <motion.div
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
+            variants={itemVariants}
+          >
+            <div>
+              <h2 className="text-3xl font-bold text-balance">¡Hola, {user.name.split(" ")[0]}!</h2>
+              <p className="text-muted-foreground text-pretty">
+                Continúa tu viaje de aprendizaje sobre reciclaje
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="flex items-center gap-1">
+                <Star className="h-3 w-3" />
+                Nivel {user.level}
+              </Badge>
+            </div>
+          </motion.div>
+
+          {/* Stats Cards */}
+          <motion.div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" variants={containerVariants}>
+            <motion.div variants={itemVariants} whileHover={cardHoverVariants.hover}>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-5 w-5 text-primary" />
+                    <div>
+                      <p className="text-2xl font-bold">{user.points}</p>
+                      <p className="text-xs text-muted-foreground">Puntos</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants} whileHover={cardHoverVariants.hover}>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5 text-primary" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Completados</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants} whileHover={cardHoverVariants.hover}>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    <div>
+                      <p className="text-2xl font-bold">{user.level}</p>
+                      <p className="text-xs text-muted-foreground">Nivel</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants} whileHover={cardHoverVariants.hover}>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Award className="h-5 w-5 text-primary" />
+                    <div><p className="text-2xl font-bold">{user.achievements.length}</p>
+                      <p className="text-xs text-muted-foreground">Insignias</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+
+          {/* Progress Section */}
+          <motion.div variants={itemVariants} whileHover={cardHoverVariants.hover}>
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Tu Progreso
+                </CardTitle>
+                <CardDescription>Sigue avanzando hacia el siguiente nivel</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-sm">
+                    <span>Nivel {user.level}</span>
+                    <span>Nivel {user.level + 1}</span>
+                  </div>
+                  <Progress value={progressPercentage} className="h-2" />
+                  <p className="text-sm text-muted-foreground">
+                    {pointsToNextLevel} puntos para el siguiente nivel
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.section>
+
+        {/* ========================================================== */}
+        {/* SECCIÓN DE QUIZZES                                         */}
+        {/* ========================================================== */}
+        <motion.section variants={containerVariants} initial="hidden" animate="visible">
+          <motion.div className="flex items-center justify-between mb-6" variants={itemVariants}>
+            <h3 className="text-2xl font-bold text-balance">Quizzes Disponibles</h3>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/quizzes">Ver todos</Link>
+              </Button>
+            </div>
+          </motion.div>
+
+          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6" variants={containerVariants}>
+            {(quizzes && quizzes.length > 0 ? quizzes.slice(0, 2) : []).map(quiz => {
+              const attempt = user.quizAttempts?.find(a => a.quizId === quiz.id)
+              const completed = !!attempt
+              const scorePct =
+                attempt && attempt.totalPoints ? Math.round((attempt.score / attempt.totalPoints) * 100) : null
+              const difficultyBadge =
+                quiz.difficulty === "easy"
+                  ? "Fácil"
+                  : quiz.difficulty === "medium"
+                  ? "Medio"
+                  : quiz.difficulty === "hard"
+                  ? "Difícil"
+                  : "Nivel"
+
+              return (
+                <Card
+                  key={quiz.id}
+                  className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="aspect-video relative overflow-hidden">
+                    <img
+                      src={(quiz as any).imageUrl || "/placeholder.svg"}
+                      alt={quiz.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 left-2">
+                      <div
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                          quiz.difficulty === "easy"
+                            ? "bg-green-100 text-green-800"
+                            : quiz.difficulty === "medium"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {difficultyBadge}
+                      </div>
+                    </div>
+                    {completed && scorePct !== null && (
+                      <div className="absolute top-2 right-2">
+                        <div className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-500 text-white">
+                          <Trophy className="h-3 w-3 mr-1" />
+                          {scorePct}%
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="px-6 pb-4">
+                    <div className="font-semibold text-lg text-balance leading-tight">{quiz.title}</div>
+                    <div className="text-muted-foreground text-sm mt-1">{quiz.description}</div>
+
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        <span>{(quiz as any).duration ?? "5-10 min"}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Trophy className="h-4 w-4" />
+                        <span>{(quiz as any).points ?? "30 pts"}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold text-foreground">
+                        {(quiz as any).category ?? "General"}
+                      </div>
+
+                      <Link
+                        href={`/quiz/${quiz.id}`}
+                        className={`inline-flex items-center h-8 px-3 rounded-md text-sm font-medium ${
+                          completed ? "bg-green-600 text-white" : "bg-primary text-primary-foreground"
+                        }`}
+                      >
+                        <Play className="h-4 w-4 mr-1" />
+                        {completed ? "Repetir" : "Comenzar"}
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
+          </motion.div>
+        </motion.section>
+
+        {/* ========================================================== */}
+        {/* SECCIÓN DE JUEGOS                                          */}
+        {/* ========================================================== */}
+        <motion.section variants={containerVariants} initial="hidden" animate="visible" className="mt-6">
+          <motion.div className="flex items-center justify-between mb-4" variants={itemVariants}>
+            <h3 className="text-2xl font-bold text-balance">Juegos</h3>
+            <p className="text-sm text-muted-foreground">Diviértete y refuerza lo aprendido</p>
+          </motion.div>
+
+          <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6" variants={containerVariants}>
+            <motion.div variants={itemVariants}>
+              <Card className="hover:shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <Gamepad2 className="h-5 w-5 text-primary" />
+                    <CardTitle>Recycling Time 2</CardTitle>
+                  </div>
+                  <CardDescription>Selecciona el residuo y llévalo a cada contenedor correcto</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild>
+                    <Link href="/juego1">Jugar</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Card className="hover:shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <Gamepad2 className="h-5 w-5 text-primary" />
+                    <CardTitle>Clean Ocean</CardTitle>
+                  </div>
+                  <CardDescription>Ayuda a que los animales tengan un entorno limpio</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild>
+                    <Link href="/juego2">Jugar</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </motion.section>
+
+        {/* ========================================================== */}
+        {/* SECCIÓN DE INSIGNIAS                                       */}
+        {/* ========================================================== */}
+        <motion.section variants={containerVariants} initial="hidden" animate="visible">
+          <motion.h3 className="text-2xl font-bold mb-6" variants={itemVariants}>
+            Tus Insignias
+          </motion.h3>
+          <motion.div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" variants={containerVariants}>
+            {user.achievements.length > 0 ? (
+              user.achievements.map(achievement => (
+                <motion.div
+                  key={achievement.id}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Card className="text-center p-4">
+                    <Award className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-sm font-medium text-balance">{achievement.name}</p>
+                  </Card>
+                </motion.div>
+              ))
+            ) : (
+              <motion.p variants={itemVariants} className="text-muted-foreground col-span-full">
+                Aún no has ganado insignias. ¡Sigue jugando!
+              </motion.p>
+            )}
+          </motion.div>
+        </motion.section>
+      </main>
+    </div>
+  )
+}
